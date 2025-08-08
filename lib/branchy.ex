@@ -4,7 +4,12 @@ defmodule Branchy do
       ["compare"] ->
         IO.puts("compare:")
         IO.puts("will compare all local branches against main branch")
-        Git.compare("branch-1", "branch-2")
+        # Get all branches
+        branches = Git.get_all_branches()
+
+      # Get main branch if available via remote
+      # If not available, prompt user to set one locally
+      # Loop through main branches and Git.compare()
 
       ["contrast"] ->
         IO.puts("contrast:")
