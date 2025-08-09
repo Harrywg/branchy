@@ -13,11 +13,8 @@ defmodule Branchy do
       ["inspect"] ->
         Controller.inspect()
 
-      [""] ->
-        IO.puts("Please provide an argument")
-
       _ ->
-        IO.puts("Invalid arguments")
+        Render.invalid_arguments()
     end
   end
 end

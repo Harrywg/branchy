@@ -32,12 +32,18 @@ defmodule Render do
     IO.puts(Style.two_cols(branch_names, branch_compare_data))
   end
 
-  def push_msg(msg) do
-    IO.puts("")
-    IO.puts(msg)
-  end
-
   def error(msg) do
     IO.puts(Style.error(msg))
+  end
+
+  def invalid_arguments do
+    IO.puts("")
+    Render.error("Error: invalid arguments")
+    IO.puts("Use one of the following:")
+    IO.puts("branchy compare")
+    IO.puts("branchy contrast")
+    IO.puts("branchy sync")
+    IO.puts("branchy inspect")
+    IO.puts("")
   end
 end
