@@ -8,7 +8,7 @@ defmodule Controller do
       Render.compare(head, comparisons)
     else
       {:error, msg} ->
-        Render.error({:error, msg})
+        Render.error(msg)
     end
   end
 

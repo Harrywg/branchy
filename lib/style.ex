@@ -19,6 +19,11 @@ defmodule Style do
     IO.ANSI.red() <> str <> IO.ANSI.reset()
   end
 
+  @spec error(binary()) :: binary()
+  def error(str) do
+    IO.ANSI.red() <> str <> IO.ANSI.reset()
+  end
+
   # @spec two_cols(list(binary(), list(binary())))
   def two_cols(col_1_list, col_2_list) do
     col_1_most_chars =

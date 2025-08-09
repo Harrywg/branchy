@@ -13,8 +13,6 @@ defmodule Render do
       end)
 
     IO.puts(Style.two_cols(branch_names, branch_compare_data))
-
-    IO.puts("")
   end
 
   def push_msg(msg) do
@@ -22,7 +20,7 @@ defmodule Render do
     IO.puts(msg)
   end
 
-  def error({:error, message}) do
-    IO.puts(message)
+  def error(msg) do
+    IO.puts(Style.error(msg))
   end
 end

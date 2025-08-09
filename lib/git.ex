@@ -17,13 +17,7 @@ defmodule Git do
       branch_1_ahead = branch_1_ahead_raw |> read_terminal_output() |> List.first()
       branch_2_ahead = branch_2_ahead_raw |> read_terminal_output() |> List.first()
 
-      {
-        :ok,
-        [{branch_1, branch_1_ahead}, {branch_2, branch_2_ahead}]
-      }
-
-      # "#{Style.branch(branch_1)} ↑ #{branch_1_ahead} ↓ #{branch_2_ahead}"
-      # "#{Style.branch(branch_1)} is #{branch_1_ahead} commits ahead, #{branch_2_ahead} behind #{Style.branch(branch_2)}"
+      {:ok, [{branch_1, branch_1_ahead}, {branch_2, branch_2_ahead}]}
     else
       {_, exit_status} ->
         {:error, "Failed to compare branches: git command exited with status #{exit_status}"}
@@ -75,7 +69,8 @@ defmodule Git do
         remote_branches = read_terminal_output(remote_branches_raw)
 
         head =
-          Enum.reduce(remote_branches, fn ln, acc ->
+          remote_branches
+          |> Enum.reduce(fn ln, acc ->
             case ln do
               "HEAD branch: " <> branch_name -> branch_name
               _ -> acc
