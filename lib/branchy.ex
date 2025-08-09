@@ -2,13 +2,13 @@ defmodule Branchy do
   def main(args) do
     case args do
       ["compare"] ->
-        Cmd.compare()
+        Controller.compare()
 
       ["contrast"] ->
-        Cmd.contrast()
+        Controller.contrast()
 
       ["inspect"] ->
-        Cmd.inspect()
+        Controller.inspect()
 
       [""] ->
         IO.puts("Please provide an argument")
