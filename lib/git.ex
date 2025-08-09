@@ -14,24 +14,29 @@ defmodule Git do
            System.cmd("git", ["rev-list", "--count", branch_1, "^#{branch_2}"]),
          {branch_2_ahead_raw, 0} <-
            System.cmd("git", ["rev-list", "--count", branch_2, "^#{branch_1}"]) do
-      branch_1_ahead = read_terminal_output(branch_1_ahead_raw)
-      branch_2_ahead = read_terminal_output(branch_2_ahead_raw)
+      branch_1_ahead = branch_1_ahead_raw |> read_terminal_output() |> List.first()
+      branch_2_ahead = branch_2_ahead_raw |> read_terminal_output() |> List.first()
 
-      {:ok,
-       "#{branch_1} is #{List.first(branch_1_ahead)} commits ahead, #{List.first(branch_2_ahead)} behind #{branch_2}"}
+      {
+        :ok,
+        [{branch_1, branch_1_ahead}, {branch_2, branch_2_ahead}]
+      }
+
+      # "#{Style.branch(branch_1)} ↑ #{branch_1_ahead} ↓ #{branch_2_ahead}"
+      # "#{Style.branch(branch_1)} is #{branch_1_ahead} commits ahead, #{branch_2_ahead} behind #{Style.branch(branch_2)}"
     else
       {_, exit_status} ->
         {:error, "Failed to compare branches: git command exited with status #{exit_status}"}
     end
   end
 
-  @spec compare_branches_to_head(any(), any()) :: {:error, binary()} | {:ok, list()}
+  @spec compare_branches_to_head(list(), binary()) :: {:error, binary()} | {:ok, list()}
   def compare_branches_to_head(branches, head) do
     branches
     |> Enum.reduce_while([], fn branch, acc ->
       case compare_two_branches(branch, "origin/#{head}") do
-        {:ok, msg} ->
-          {:cont, [msg | acc]}
+        {:ok, compare_data} ->
+          {:cont, [compare_data | acc]}
 
         error ->
           {:halt, error}
@@ -39,7 +44,7 @@ defmodule Git do
     end)
     |> case do
       {:error, error} -> {:error, error}
-      messages -> {:ok, Enum.reverse(messages)}
+      comparisons -> {:ok, Enum.reverse(comparisons)}
     end
   end
 
