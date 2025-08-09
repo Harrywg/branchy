@@ -42,6 +42,24 @@ defmodule Git do
     end
   end
 
+  @spec compare_branches_to_remote(list()) :: {:error, binary()} | {:ok, list()}
+  def compare_branches_to_remote(branches) do
+    branches
+    |> Enum.reduce_while([], fn branch, acc ->
+      case compare_two_branches(branch, "origin/#{branch}") do
+        {:ok, compare_data} ->
+          {:cont, [compare_data | acc]}
+
+        error ->
+          {:halt, error}
+      end
+    end)
+    |> case do
+      {:error, error} -> {:error, error}
+      comparisons -> {:ok, Enum.reverse(comparisons)}
+    end
+  end
+
   @spec get_all_local_branches() :: {:error, <<_::64, _::_*8>>} | {:ok, list()}
   def get_all_local_branches do
     case System.cmd("git", ["branch"]) do

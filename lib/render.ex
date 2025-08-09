@@ -15,6 +15,23 @@ defmodule Render do
     IO.puts(Style.two_cols(branch_names, branch_compare_data))
   end
 
+  def contrast(comparisons) do
+    IO.puts("")
+    IO.puts("Local branches compared against origin/<branch>")
+
+    branch_names =
+      comparisons |> Enum.map(fn [{branch_1, _}, {_, _}] -> Style.branch(branch_1) end)
+
+    branch_compare_data =
+      comparisons
+      |> Enum.map(fn [{_, branch_1_ahead}, {branch_2, branch_2_ahead}] ->
+        Style.ahead("↑ #{branch_1_ahead}") <>
+          " " <> Style.behind("↓ #{branch_2_ahead}  #{branch_2}")
+      end)
+
+    IO.puts(Style.two_cols(branch_names, branch_compare_data))
+  end
+
   def push_msg(msg) do
     IO.puts("")
     IO.puts(msg)

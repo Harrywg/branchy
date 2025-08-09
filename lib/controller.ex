@@ -14,8 +14,14 @@ defmodule Controller do
 
   @spec contrast() :: :ok
   def contrast do
-    IO.puts("contrast:")
-    IO.puts("will check all local branches against remote counterparts if exists")
+    with :ok <- Git.fetch(),
+         {:ok, local_branches} <- Git.get_all_local_branches(),
+         {:ok, comparisons} <- Git.compare_branches_to_remote(local_branches) do
+      Render.contrast(comparisons)
+    else
+      {:error, msg} ->
+        Render.error(msg)
+    end
   end
 
   @spec inspect() :: :ok
