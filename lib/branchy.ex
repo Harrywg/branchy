@@ -6,11 +6,11 @@ defmodule Branchy do
         head = Git.get_remote_head()
 
         comparison_results =
-          local_branches
-          |> Enum.filter(fn branch -> branch !== head end)
-          |> Enum.map(fn branch -> Git.compare_two_branches(branch, head) end)
+          Enum.map(local_branches, fn branch ->
+            Git.compare_two_branches(branch, "origin/#{head}")
+          end)
 
-        Terminal.log_compare(head, comparison_results)
+        Render.compare(head, comparison_results)
 
       ["contrast"] ->
         IO.puts("contrast:")
