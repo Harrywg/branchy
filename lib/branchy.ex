@@ -2,14 +2,15 @@ defmodule Branchy do
   def main(args) do
     case args do
       ["compare"] ->
-        IO.puts("compare:")
-        IO.puts("will compare all local branches against main branch")
-        # Get all branches
-        branches = Git.get_all_branches()
+        local_branches = Git.get_all_local_branches()
+        head = Git.get_remote_head()
 
-      # Get main branch if available via remote
-      # If not available, prompt user to set one locally
-      # Loop through main branches and Git.compare()
+        comparison_results =
+          local_branches
+          |> Enum.filter(fn branch -> branch !== head end)
+          |> Enum.map(fn branch -> Git.compare_two_branches(branch, head) end)
+
+        Terminal.log_compare(head, comparison_results)
 
       ["contrast"] ->
         IO.puts("contrast:")
