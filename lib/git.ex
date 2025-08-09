@@ -25,10 +25,11 @@ defmodule Git do
     end
   end
 
+  @spec compare_branches_to_head(any(), any()) :: {:error, binary()} | {:ok, list()}
   def compare_branches_to_head(branches, head) do
     branches
     |> Enum.reduce_while([], fn branch, acc ->
-      case compare_two_branches(branch, head) do
+      case compare_two_branches(branch, "origin/#{head}") do
         {:ok, msg} ->
           {:cont, [msg | acc]}
 
@@ -88,8 +89,11 @@ defmodule Git do
     fetch_res = System.cmd("git", ["fetch"])
 
     case fetch_res do
-      {_, 0} -> :ok
-      _ -> {:error, "Couldn't fetch remote branches"}
+      {_, 0} ->
+        :ok
+
+      {_, exit_status} ->
+        {:error, "Failed to fetch remote branches: git command exited with status #{exit_status}"}
     end
   end
 end

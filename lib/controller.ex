@@ -1,7 +1,8 @@
 defmodule Controller do
   @spec compare() :: :ok
   def compare do
-    with {:ok, local_branches} <- Git.get_all_local_branches(),
+    with :ok <- Git.fetch(),
+         {:ok, local_branches} <- Git.get_all_local_branches(),
          {:ok, head} <- Git.get_remote_head(),
          {:ok, comparison_results} <- Git.compare_branches_to_head(local_branches, head) do
       Render.compare(head, comparison_results)
