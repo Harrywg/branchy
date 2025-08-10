@@ -1,10 +1,13 @@
 defmodule Render do
   def compare(head, comparisons) do
     IO.puts("")
-    IO.puts("Local branches compared against #{Style.head_branch("origin/" <> head)}")
 
     branch_names =
-      comparisons |> Enum.map(fn [{branch_1, _}, {_, _}] -> Style.branch(branch_1) end)
+      comparisons
+      |> Enum.map(fn [{branch_1, _}, {_, _}] ->
+        Style.branch(branch_1) <>
+          Style.faded(" -> ") <> Style.upstream_branch("origin/#{head}")
+      end)
 
     branch_compare_data =
       comparisons
@@ -17,26 +20,20 @@ defmodule Render do
 
   def contrast(comparisons) do
     IO.puts("")
-    IO.puts("Local branches compared upstream")
 
-    [branch_names, origin_branch_names] =
+    branch_names =
       comparisons
-      |> Enum.reduce([[], []], fn compare_data, [branches_acc, origins_acc] ->
+      |> Enum.map(fn compare_data ->
         case compare_data do
-          [{branch_1, _}, _] ->
-            [
-              [Style.branch(branch_1) | branches_acc],
-              [Style.head_branch("origin/#{branch_1}") | origins_acc]
-            ]
+          [{branch_1, _}, {_, _}] ->
+            Style.branch(branch_1) <>
+              Style.faded(" -> ") <> Style.upstream_branch("origin/#{branch_1}")
 
           {:no_upstream, branch_1} ->
-            [
-              [Style.branch(branch_1) | branches_acc],
-              ["" | origins_acc]
-            ]
+            Style.branch(branch_1) <>
+              Style.faded(" -> ") <> Style.error("x")
         end
       end)
-      |> Enum.map(&Enum.reverse/1)
 
     branch_compare_data =
       comparisons
@@ -47,15 +44,11 @@ defmodule Render do
               " " <> Style.behind("↓ #{branch_2_ahead}")
 
           {:no_upstream, _branch_1} ->
-            Style.error("× no upstream")
+            Style.error("no upstream")
         end
       end)
 
-    IO.puts(
-      Style.two_cols(branch_names, branch_compare_data)
-      |> String.split("\n")
-      |> Style.two_cols(origin_branch_names)
-    )
+    IO.puts(Style.two_cols(branch_names, branch_compare_data))
   end
 
   def error(msg) do

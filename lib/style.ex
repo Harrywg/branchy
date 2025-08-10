@@ -1,6 +1,6 @@
 defmodule Style do
-  @spec head_branch(binary()) :: binary()
-  def head_branch(str) do
+  @spec upstream_branch(binary()) :: binary()
+  def upstream_branch(str) do
     IO.ANSI.cyan() <> str <> IO.ANSI.reset()
   end
 
@@ -22,6 +22,10 @@ defmodule Style do
   @spec error(binary()) :: binary()
   def error(str) do
     IO.ANSI.red() <> str <> IO.ANSI.reset()
+  end
+
+  def faded(str) do
+    IO.ANSI.light_black() <> str <> IO.ANSI.reset()
   end
 
   def two_cols(col_1_list, col_2_list) do
