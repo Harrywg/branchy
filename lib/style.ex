@@ -16,7 +16,7 @@ defmodule Style do
 
   @spec behind(binary()) :: binary()
   def behind(str) do
-    IO.ANSI.red() <> str <> IO.ANSI.reset()
+    IO.ANSI.light_red() <> str <> IO.ANSI.reset()
   end
 
   @spec error(binary()) :: binary()

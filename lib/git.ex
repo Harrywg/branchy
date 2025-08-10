@@ -8,8 +8,7 @@ defmodule Git do
     |> Enum.filter(fn str -> String.length(str) > 0 end)
   end
 
-  defp compare_two_branches(branch_1, branch_2)
-       when is_binary(branch_1) and is_binary(branch_2) do
+  defp compare_two_branches(branch_1, branch_2) do
     with {branch_1_ahead_raw, 0} <-
            System.cmd("git", ["rev-list", "--count", branch_1, "^#{branch_2}"]),
          {branch_2_ahead_raw, 0} <-
@@ -19,8 +18,8 @@ defmodule Git do
 
       {:ok, [{branch_1, branch_1_ahead}, {branch_2, branch_2_ahead}]}
     else
-      {_, exit_status} ->
-        {:error, "Failed to compare branches: git command exited with status #{exit_status}"}
+      {_err, exit_status} ->
+        {exit_status, {branch_1, branch_2}}
     end
   end
 
@@ -32,8 +31,9 @@ defmodule Git do
         {:ok, compare_data} ->
           {:cont, [compare_data | acc]}
 
-        error ->
-          {:halt, error}
+        {exit_status, _} ->
+          {:halt,
+           {:error, "Failed to compare branches: git command exited with status #{exit_status}"}}
       end
     end)
     |> case do
@@ -50,8 +50,8 @@ defmodule Git do
         {:ok, compare_data} ->
           {:cont, [compare_data | acc]}
 
-        error ->
-          {:halt, error}
+        {_exit_status, {branch_1, _branch_2}} ->
+          {:cont, [{:no_upstream, branch_1} | acc]}
       end
     end)
     |> case do
