@@ -24,18 +24,24 @@ defmodule Style do
     IO.ANSI.red() <> str <> IO.ANSI.reset()
   end
 
-  # @spec two_cols(list(binary(), list(binary())))
   def two_cols(col_1_list, col_2_list) do
+    # Strip ANSI formatting
+    visual_length = fn str ->
+      str
+      |> String.replace(~r/\e\[[0-9;]*m/, "")
+      |> String.length()
+    end
+
     col_1_most_chars =
       Enum.reduce(col_1_list, 0, fn str, acc ->
-        max(String.length(str), acc)
+        max(visual_length.(str), acc)
       end)
 
     col_1_list
     |> Enum.with_index()
     |> Enum.reduce("", fn {col_1, i}, acc ->
-      line =
-        "#{String.pad_trailing(col_1, col_1_most_chars)}  #{Enum.at(col_2_list, i)}\n"
+      padding_needed = col_1_most_chars - visual_length.(col_1)
+      line = "#{col_1}#{String.duplicate(" ", padding_needed)}  #{Enum.at(col_2_list, i)}\n"
 
       acc <> line
     end)

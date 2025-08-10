@@ -17,19 +17,26 @@ defmodule Render do
 
   def contrast(comparisons) do
     IO.puts("")
-    IO.puts("Local branches compared against origin/<branch>")
+    IO.puts("Local branches compared upstream")
 
-    branch_names =
+    [branch_names, origin_branch_names] =
       comparisons
-      |> Enum.map(fn compare_data ->
+      |> Enum.reduce([[], []], fn compare_data, [branches_acc, origins_acc] ->
         case compare_data do
           [{branch_1, _}, _] ->
-            Style.branch(branch_1)
+            [
+              [Style.branch(branch_1) | branches_acc],
+              [Style.head_branch("origin/#{branch_1}") | origins_acc]
+            ]
 
           {:no_upstream, branch_1} ->
-            Style.branch(branch_1)
+            [
+              [Style.branch(branch_1) | branches_acc],
+              ["" | origins_acc]
+            ]
         end
       end)
+      |> Enum.map(&Enum.reverse/1)
 
     branch_compare_data =
       comparisons
@@ -44,7 +51,11 @@ defmodule Render do
         end
       end)
 
-    IO.puts(Style.two_cols(branch_names, branch_compare_data))
+    IO.puts(
+      Style.two_cols(branch_names, branch_compare_data)
+      |> String.split("\n")
+      |> Style.two_cols(origin_branch_names)
+    )
   end
 
   def error(msg) do
