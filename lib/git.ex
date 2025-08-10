@@ -10,9 +10,13 @@ defmodule Git do
 
   defp compare_two_branches(branch_1, branch_2) do
     with {branch_1_ahead_raw, 0} <-
-           System.cmd("git", ["rev-list", "--count", branch_1, "^#{branch_2}"]),
+           System.cmd("git", ["rev-list", "--count", branch_1, "^#{branch_2}"],
+             stderr_to_stdout: true
+           ),
          {branch_2_ahead_raw, 0} <-
-           System.cmd("git", ["rev-list", "--count", branch_2, "^#{branch_1}"]) do
+           System.cmd("git", ["rev-list", "--count", branch_2, "^#{branch_1}"],
+             stderr_to_stdout: true
+           ) do
       branch_1_ahead = branch_1_ahead_raw |> read_terminal_output() |> List.first()
       branch_2_ahead = branch_2_ahead_raw |> read_terminal_output() |> List.first()
 
@@ -44,25 +48,24 @@ defmodule Git do
 
   @spec compare_branches_to_remote(list()) :: {:error, binary()} | {:ok, list()}
   def compare_branches_to_remote(branches) do
-    branches
-    |> Enum.reduce_while([], fn branch, acc ->
-      case compare_two_branches(branch, "origin/#{branch}") do
-        {:ok, compare_data} ->
-          {:cont, [compare_data | acc]}
+    compare_data =
+      branches
+      |> Enum.reduce_while([], fn branch, acc ->
+        case compare_two_branches(branch, "origin/#{branch}") do
+          {:ok, compare_data} ->
+            {:cont, [compare_data | acc]}
 
-        {_exit_status, {branch_1, _branch_2}} ->
-          {:cont, [{:no_upstream, branch_1} | acc]}
-      end
-    end)
-    |> case do
-      {:error, error} -> {:error, error}
-      comparisons -> {:ok, Enum.reverse(comparisons)}
-    end
+          {_exit_status, {branch_1, _branch_2}} ->
+            {:cont, [{:no_upstream, branch_1} | acc]}
+        end
+      end)
+
+    {:ok, Enum.reverse(compare_data)}
   end
 
   @spec get_all_local_branches() :: {:error, <<_::64, _::_*8>>} | {:ok, list()}
   def get_all_local_branches do
-    case System.cmd("git", ["branch"]) do
+    case System.cmd("git", ["branch"], stderr_to_stdout: true) do
       {all_branches_raw, 0} ->
         all_branches = read_terminal_output(all_branches_raw)
 
@@ -82,20 +85,24 @@ defmodule Git do
 
   @spec get_remote_head() :: {:error, <<_::144>>} | {:ok, binary()}
   def get_remote_head do
-    case System.cmd("git", ["remote", "show", "origin"]) do
+    case System.cmd("git", ["remote", "show", "origin"], stderr_to_stdout: true) do
       {remote_branches_raw, 0} ->
         remote_branches = read_terminal_output(remote_branches_raw)
 
         head =
           remote_branches
-          |> Enum.reduce(fn ln, acc ->
+          |> Enum.reduce("", fn ln, acc ->
             case ln do
               "HEAD branch: " <> branch_name -> branch_name
               _ -> acc
             end
           end)
 
-        {:ok, head}
+        if String.length(head) > 0 do
+          {:ok, head}
+        else
+          {:error, "Failed to get HEAD from origin: couldn't parse head from git output"}
+        end
 
       {_, exit_status} ->
         {:error, "Failed to get HEAD from origin: git command exited with status #{exit_status}"}
@@ -104,7 +111,7 @@ defmodule Git do
 
   @spec fetch() :: :ok | {:error, <<_::240>>}
   def fetch do
-    fetch_res = System.cmd("git", ["fetch"])
+    fetch_res = System.cmd("git", ["fetch"], stderr_to_stdout: true)
 
     case fetch_res do
       {_, 0} ->
