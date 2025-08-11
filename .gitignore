@@ -21,3 +21,6 @@ branchy-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Burrito build output
+/burrito_out/

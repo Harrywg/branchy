@@ -1,0 +1,1 @@
+alias branchy='mix run -e "Branchy.main()" --'
