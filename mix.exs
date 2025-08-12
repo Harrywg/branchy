@@ -8,7 +8,8 @@ defmodule Branchy.MixProject do
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      releases: releases()
+      releases: releases(),
+      aliases: aliases()
     ]
   end
 
@@ -38,6 +39,17 @@ defmodule Branchy.MixProject do
             macos: [os: :darwin, cpu: :aarch64]
           ]
         ]
+      ]
+    ]
+  end
+
+  defp aliases do
+    [
+      "branchy.release": [
+        "cmd rm -rf ./burrito_out",
+        "clean",
+        "compile",
+        "cmd BURRITO_TARGET=macos MIX_ENV=prod mix release --overwrite"
       ]
     ]
   end
