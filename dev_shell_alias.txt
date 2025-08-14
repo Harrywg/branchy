@@ -1,1 +1,1 @@
-alias branchy='mix run -e "Branchy.main()" --'
+alias branchy='mix run --no-start -e "Branchy.main(System.argv())" --'

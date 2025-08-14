@@ -14,6 +14,12 @@ defmodule Branchy.Application do
           System.halt()
         end)
 
+      :dev ->
+        Task.start_link(fn ->
+          args = System.argv()
+          Branchy.main(args)
+        end)
+
       :test ->
         Task.start_link(fn ->
           Process.sleep(:infinity)

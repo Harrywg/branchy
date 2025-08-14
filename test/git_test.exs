@@ -9,6 +9,7 @@ defmodule Test.Git do
   # 3 the test repo is destroyed after each use, allowing for it to be replaced
   # 4 each repo needs fake upstream branches somehow
   # 5 use these utils to test the git module
+  IO.puts("123")
 
   test "1=1" do
     assert 1 == 1
