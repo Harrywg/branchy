@@ -1,6 +1,6 @@
 defmodule Git do
   @spec read_terminal_output(binary()) :: list()
-  defp read_terminal_output(output_str) do
+  def read_terminal_output(output_str) do
     output_str_arr = String.split(output_str, "\n")
 
     output_str_arr
@@ -8,7 +8,7 @@ defmodule Git do
     |> Enum.filter(fn str -> String.length(str) > 0 end)
   end
 
-  defp compare_two_branches(branch_1, branch_2) do
+  def compare_two_branches(branch_1, branch_2) do
     with {branch_1_ahead_raw, 0} <-
            System.cmd("git", ["rev-list", "--count", branch_1, "^#{branch_2}"],
              stderr_to_stdout: true
