@@ -3,24 +3,27 @@ defmodule Test.Git do
   doctest Branchy
 
   Code.require_file("test_repos.ex", Path.dirname(__ENV__.file))
-  @test_repo_path "./test/test_repo"
 
   setup do
+    {test_repo_path, test_repo_path_remote} = TestRepos.get_test_repo()
     original_dir = File.cwd!()
 
     # Init test repo
-    File.rm_rf!(@test_repo_path)
-    File.mkdir_p!(@test_repo_path)
-    System.cmd("git", ["init"], cd: @test_repo_path)
-    System.cmd("git", ["config", "user.email", "test@example.com"], cd: @test_repo_path)
-    System.cmd("git", ["config", "user.name", "Test User"], cd: @test_repo_path)
+    File.rm_rf!(test_repo_path)
+    File.mkdir_p!(test_repo_path)
+    System.cmd("git", ["init"], cd: test_repo_path)
 
-    File.cd!(@test_repo_path)
+    File.rm_rf!(test_repo_path_remote)
+    File.mkdir_p!(test_repo_path_remote)
+    System.cmd("git", ["init", "--bare"], cd: test_repo_path_remote)
 
-    # Restore original working directory
+    File.cd(test_repo_path)
+
+    # Restore original working directory on cleanup
     on_exit(fn ->
       File.cd!(original_dir)
-      File.rm_rf!(@test_repo_path)
+      File.rm_rf!(test_repo_path)
+      File.rm_rf!(test_repo_path_remote)
     end)
 
     :ok
@@ -90,7 +93,7 @@ defmodule Test.Git do
       res_1 = Git.compare_two_branches("branch-1", "branch-1")
       assert {:ok, [{"branch-1", "0"}, {"branch-1", "0"}]} = res_1
 
-      # branch-2 is 1 commit ahead of branch-1, branch-1 is 0 commits ahead of branch-2
+      # branch-1 is 2 commits ahead of branch-2, branch-2 is 0 commits ahead of branch-1
       res_2 = Git.compare_two_branches("branch-1", "branch-2")
       assert {:ok, [{"branch-1", "0"}, {"branch-2", "1"}]} = res_2
 
@@ -103,7 +106,6 @@ defmodule Test.Git do
       TestRepos.repo_2()
 
       # Compare parallel branches - each should be 1 commit ahead of the other
-      # since they diverged from the same point but have different commits
       res_1 = Git.compare_two_branches("branch-1", "branch-2")
       assert {:ok, [{"branch-1", "1"}, {"branch-2", "1"}]} = res_1
 
