@@ -54,6 +54,10 @@ defmodule TestRepos do
     cmd("git add .")
     cmd("git commit -m 'Main commit'")
 
+    # Add remote and push main branch
+    cmd("git remote add origin #{@test_repo_path_remote}")
+    cmd("git push -u origin main")
+
     # branch-1
     cmd("git checkout -b branch-1")
     new_file("a.txt", "Feature A")
@@ -83,6 +87,10 @@ defmodule TestRepos do
     cmd("git add .")
     cmd("git commit -m 'Start'")
 
+    # Add remote and push main branch
+    cmd("git remote add origin #{@test_repo_path_remote}")
+    cmd("git push -u origin main")
+
     # branch-1 2 commits
     new_file("a1.txt", "First commit on A")
     cmd("git checkout -b branch-1")
@@ -91,6 +99,7 @@ defmodule TestRepos do
     new_file("a2.txt", "Second commit on A")
     cmd("git add .")
     cmd("git commit -m 'A commit 2'")
+    cmd("git push -u origin branch-1")
 
     # branch-2 with 3 commits from main
     cmd("git checkout main")
@@ -104,5 +113,6 @@ defmodule TestRepos do
     new_file("b3.txt", "Third commit on B")
     cmd("git add .")
     cmd("git commit -m 'B commit 3'")
+    cmd("git push -u origin branch-2")
   end
 end

@@ -156,25 +156,27 @@ defmodule Test.Git do
                Git.compare_branches_to_head(["branch-1", "branch-2"], "main")
     end
 
-    # test "returns correct commit counts for parallel branches in repo_2" do
-    #   TestRepos.repo_2()
+    test "returns correct commit counts for parallel branches in repo_2" do
+      TestRepos.repo_2()
 
-    #   assert {:ok,
-    #           [
-    #             [{"branch-1", "1"}, {"origin/main", "0"}]
-    #           ]} =
-    #            Git.compare_branches_to_head(["branch-1", "branch-2", "branch-3"], "main")
-    # end
+      assert {:ok,
+              [
+                [{"branch-1", "1"}, {"origin/main", "0"}],
+                [{"branch-2", "1"}, {"origin/main", "0"}],
+                [{"branch-3", "1"}, {"origin/main", "0"}]
+              ]} =
+               Git.compare_branches_to_head(["branch-1", "branch-2", "branch-3"], "main")
+    end
 
-    # test "returns correct commit counts for branches with multiple commits in repo_3" do
-    #   TestRepos.repo_3()
+    test "returns correct commit counts for branches with multiple commits in repo_3" do
+      TestRepos.repo_3()
 
-    #   assert {:ok,
-    #           [
-    #             [{"branch-1", "2"}, {"origin/main", "0"}],
-    #             [{"branch-2", "3"}, {"origin/main", "0"}]
-    #           ]} =
-    #            Git.compare_branches_to_head(["branch-1", "branch-2"], "main")
-    # end
+      assert {:ok,
+              [
+                [{"branch-1", "2"}, {"origin/main", "0"}],
+                [{"branch-2", "3"}, {"origin/main", "0"}]
+              ]} =
+               Git.compare_branches_to_head(["branch-1", "branch-2"], "main")
+    end
   end
 end
