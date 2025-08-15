@@ -133,4 +133,48 @@ defmodule Test.Git do
       assert {:ok, [{"branch-2", "3"}, {"main", "0"}]} = res_3
     end
   end
+
+  describe "compare_branches_to_head/2" do
+    test "returns error if branches do not exist" do
+      TestRepos.repo_1()
+      assert {:error, _} = Git.compare_branches_to_head(["fake-branch"], "main")
+    end
+
+    test "returns :ok when real branches compared to HEAD" do
+      TestRepos.repo_1()
+      assert {:ok, _} = Git.compare_branches_to_head(["branch-1", "branch-2"], "main")
+    end
+
+    test "returns correct commit counts when real branches compared to HEAD" do
+      TestRepos.repo_1()
+
+      assert {:ok,
+              [
+                [{"branch-1", "1"}, {"origin/main", "0"}],
+                [{"branch-2", "2"}, {"origin/main", "0"}]
+              ]} =
+               Git.compare_branches_to_head(["branch-1", "branch-2"], "main")
+    end
+
+    # test "returns correct commit counts for parallel branches in repo_2" do
+    #   TestRepos.repo_2()
+
+    #   assert {:ok,
+    #           [
+    #             [{"branch-1", "1"}, {"origin/main", "0"}]
+    #           ]} =
+    #            Git.compare_branches_to_head(["branch-1", "branch-2", "branch-3"], "main")
+    # end
+
+    # test "returns correct commit counts for branches with multiple commits in repo_3" do
+    #   TestRepos.repo_3()
+
+    #   assert {:ok,
+    #           [
+    #             [{"branch-1", "2"}, {"origin/main", "0"}],
+    #             [{"branch-2", "3"}, {"origin/main", "0"}]
+    #           ]} =
+    #            Git.compare_branches_to_head(["branch-1", "branch-2"], "main")
+    # end
+  end
 end

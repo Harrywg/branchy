@@ -8,6 +8,8 @@ defmodule Git do
     |> Enum.filter(fn str -> String.length(str) > 0 end)
   end
 
+  @spec compare_two_branches(binary(), binary()) ::
+          {:ok | pos_integer(), [{any(), any()}, ...] | {binary(), binary()}}
   def compare_two_branches(branch_1, branch_2) do
     with {branch_1_ahead_raw, 0} <-
            System.cmd("git", ["rev-list", "--count", branch_1, "^#{branch_2}"],
