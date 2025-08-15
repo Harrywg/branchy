@@ -71,17 +71,64 @@ defmodule Test.Git do
   end
 
   describe "compare_two_branches/2" do
-    test "simple comparison with same commits using imported repo_1" do
+    test "return error if branches do not exist" do
       TestRepos.repo_1()
 
-      res_2 = Git.compare_two_branches("branch1", "branch1")
-      assert {:ok, [{"branch1", "0"}, {"branch1", "0"}]} = res_2
+      # One real one fake branch
+      res_1 = Git.compare_two_branches("branch-1", "fake-branch")
+      assert {128, {"branch-1", "fake-branch"}} = res_1
 
-      res_1 = Git.compare_two_branches("branch1", "branch2")
-      assert {:ok, [{"branch1", "0"}, {"branch2", "1"}]} = res_1
+      # Two fake branches
+      res_1 = Git.compare_two_branches("fake-branch", "another-fake-branch")
+      assert {128, {"fake-branch", "another-fake-branch"}} = res_1
+    end
 
-      res_2 = Git.compare_two_branches("branch1", "branch3")
-      assert {:ok, [{"branch1", "0"}, {"branch3", "2"}]} = res_2
+    test "linear branching - branches ahead of each other using repo_1" do
+      TestRepos.repo_1()
+
+      # Same branch comparison should show 0 commits ahead for both
+      res_1 = Git.compare_two_branches("branch-1", "branch-1")
+      assert {:ok, [{"branch-1", "0"}, {"branch-1", "0"}]} = res_1
+
+      # branch-2 is 1 commit ahead of branch-1, branch-1 is 0 commits ahead of branch-2
+      res_2 = Git.compare_two_branches("branch-1", "branch-2")
+      assert {:ok, [{"branch-1", "0"}, {"branch-2", "1"}]} = res_2
+
+      # main is behind both branches
+      res_3 = Git.compare_two_branches("main", "branch-2")
+      assert {:ok, [{"main", "0"}, {"branch-2", "2"}]} = res_3
+    end
+
+    test "parallel branches from main using repo_2" do
+      TestRepos.repo_2()
+
+      # Compare parallel branches - each should be 1 commit ahead of the other
+      # since they diverged from the same point but have different commits
+      res_1 = Git.compare_two_branches("branch-1", "branch-2")
+      assert {:ok, [{"branch-1", "1"}, {"branch-2", "1"}]} = res_1
+
+      # Compare branch to main - branch should be 1 ahead, main should be 0 ahead
+      res_2 = Git.compare_two_branches("branch-1", "main")
+      assert {:ok, [{"branch-1", "1"}, {"main", "0"}]} = res_2
+
+      # Compare branch-3 to other branches
+      res_3 = Git.compare_two_branches("branch-3", "branch-1")
+      assert {:ok, [{"branch-3", "1"}, {"branch-1", "1"}]} = res_3
+    end
+
+    test "multiple commits ahead/behind scenario using repo_3" do
+      TestRepos.repo_3()
+
+      # branch-1 has 2 commits, branch-2 has 3 commits, both from same base
+      res_1 = Git.compare_two_branches("branch-1", "branch-2")
+      assert {:ok, [{"branch-1", "2"}, {"branch-2", "3"}]} = res_1
+
+      # Compare branches back to main - they should be ahead by their commit count
+      res_2 = Git.compare_two_branches("branch-1", "main")
+      assert {:ok, [{"branch-1", "2"}, {"main", "0"}]} = res_2
+
+      res_3 = Git.compare_two_branches("branch-2", "main")
+      assert {:ok, [{"branch-2", "3"}, {"main", "0"}]} = res_3
     end
   end
 end

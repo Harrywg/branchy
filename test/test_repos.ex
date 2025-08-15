@@ -1,21 +1,74 @@
 defmodule TestRepos do
   def repo_1() do
-    # Create branch1 with a file
-    System.cmd("git", ["checkout", "-b", "branch1"])
-    File.write!("file1.txt", "content for branch1")
+    # Simple linear branching: main -> branch-1 -> branch-2
+    File.write!("readme.txt", "Initial commit")
     System.cmd("git", ["add", "."])
-    System.cmd("git", ["commit", "-m", "Add file1 on branch1"])
+    System.cmd("git", ["commit", "-m", "Initial commit"])
 
-    # Create branch2 from branch1 with its own file
-    System.cmd("git", ["checkout", "-b", "branch2"])
-    File.write!("file2.txt", "content for branch2")
+    System.cmd("git", ["checkout", "-b", "branch-1"])
+    File.write!("feature.txt", "Feature implementation")
     System.cmd("git", ["add", "."])
-    System.cmd("git", ["commit", "-m", "Add file2 on branch2"])
+    System.cmd("git", ["commit", "-m", "Add feature"])
 
-    # Create branch3 from branch2 with its own file
-    System.cmd("git", ["checkout", "-b", "branch3"])
-    File.write!("file3.txt", "content for branch3")
+    System.cmd("git", ["checkout", "-b", "branch-2"])
+    File.write!("feature2.txt", "Second feature")
     System.cmd("git", ["add", "."])
-    System.cmd("git", ["commit", "-m", "Add file3 on branch3"])
+    System.cmd("git", ["commit", "-m", "Add second feature"])
+  end
+
+  def repo_2() do
+    # Parallel branches from main (no merges)
+    File.write!("main.txt", "Main branch")
+    System.cmd("git", ["add", "."])
+    System.cmd("git", ["commit", "-m", "Main commit"])
+
+    System.cmd("git", ["checkout", "-b", "branch-1"])
+    File.write!("a.txt", "Feature A")
+    System.cmd("git", ["add", "."])
+    System.cmd("git", ["commit", "-m", "Add feature A"])
+
+    System.cmd("git", ["checkout", "main"])
+    System.cmd("git", ["checkout", "-b", "branch-2"])
+    File.write!("b.txt", "Feature B")
+    System.cmd("git", ["add", "."])
+    System.cmd("git", ["commit", "-m", "Add feature B"])
+
+    System.cmd("git", ["checkout", "main"])
+    System.cmd("git", ["checkout", "-b", "branch-3"])
+    File.write!("fix.txt", "Bug fix")
+    System.cmd("git", ["add", "."])
+    System.cmd("git", ["commit", "-m", "Fix bug"])
+  end
+
+  def repo_3() do
+    # Multiple commits on different branches (ahead/behind scenario)
+    File.write!("start.txt", "Starting point")
+    System.cmd("git", ["add", "."])
+    System.cmd("git", ["commit", "-m", "Start"])
+
+    # Branch 1 with 2 commits
+    System.cmd("git", ["checkout", "-b", "branch-1"])
+    File.write!("a1.txt", "First commit on A")
+    System.cmd("git", ["add", "."])
+    System.cmd("git", ["commit", "-m", "A commit 1"])
+
+    File.write!("a2.txt", "Second commit on A")
+    System.cmd("git", ["add", "."])
+    System.cmd("git", ["commit", "-m", "A commit 2"])
+
+    # Branch 2 with 3 commits from main
+    System.cmd("git", ["checkout", "main"])
+    System.cmd("git", ["checkout", "-b", "branch-2"])
+    File.write!("b1.txt", "First commit on B")
+    System.cmd("git", ["add", "."])
+    System.cmd("git", ["commit", "-m", "B commit 1"])
+
+    File.write!("b2.txt", "Second commit on B")
+    System.cmd("git", ["add", "."])
+    System.cmd("git", ["commit", "-m", "B commit 2"])
+
+    File.write!("b3.txt", "Third commit on B")
+    System.cmd("git", ["add", "."])
+    System.cmd("git", ["commit", "-m", "B commit 3"])
   end
 end
