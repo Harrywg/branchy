@@ -90,6 +90,7 @@ defmodule TestRepos do
     cmd("git add .")
     cmd("git commit -m 'Add feature A'")
     cmd("git checkout main")
+    cmd("git push -u origin branch-1")
 
     # branch-2
     cmd("git checkout -b branch-2")
@@ -97,12 +98,14 @@ defmodule TestRepos do
     cmd("git add .")
     cmd("git commit -m 'Add feature B'")
     cmd("git checkout main")
+    cmd("git push -u origin branch-2")
 
     # branch-3
     cmd("git checkout -b branch-3")
     new_file("fix.txt", "Bug fix")
     cmd("git add .")
     cmd("git commit -m 'Fix bug'")
+    cmd("git push -u origin branch-3")
   end
 
   # out of sync

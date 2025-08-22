@@ -211,4 +211,40 @@ defmodule Test.Git do
                Git.compare_branches_to_head(["branch-1", "branch-2"], "main")
     end
   end
+
+  describe "compare_branches_to_remote/1" do
+    test "returns correct commit counts for repo_1" do
+      TestRepos.repo_1()
+
+      assert {:ok,
+              [
+                [{"branch-1", "0"}, {"origin/branch-1", "0"}],
+                [{"branch-2", "0"}, {"origin/branch-2", "0"}]
+              ]} =
+               Git.compare_branches_to_remote(["branch-1", "branch-2"])
+    end
+
+    test "returns correct commit counts for repo_2" do
+      TestRepos.repo_2()
+
+      assert {:ok,
+              [
+                [{"branch-1", "0"}, {"origin/branch-1", "0"}],
+                [{"branch-2", "0"}, {"origin/branch-2", "0"}],
+                [{"branch-3", "0"}, {"origin/branch-3", "0"}]
+              ]} =
+               Git.compare_branches_to_remote(["branch-1", "branch-2", "branch-3"])
+    end
+
+    test "returns correct commit counts for repo_3" do
+      TestRepos.repo_3()
+
+      assert {:ok,
+              [
+                [{"branch-1", "0"}, {"origin/branch-1", "0"}],
+                [{"branch-2", "0"}, {"origin/branch-2", "0"}]
+              ]} =
+               Git.compare_branches_to_remote(["branch-1", "branch-2"])
+    end
+  end
 end
