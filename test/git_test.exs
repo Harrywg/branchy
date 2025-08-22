@@ -277,4 +277,26 @@ defmodule Test.Git do
                Git.compare_branches_to_remote(["branch-1", "branch-2"])
     end
   end
+
+  describe "get_all_local_branches/0" do
+    test "returns all local branches for repo_1" do
+      TestRepos.repo_1()
+      assert {:ok, branches} = Git.get_all_local_branches()
+      assert Enum.sort(branches) == Enum.sort(["main", "branch-1", "branch-2"])
+    end
+
+    test "returns all local branches for repo_2" do
+      TestRepos.repo_2()
+      assert {:ok, branches} = Git.get_all_local_branches()
+      assert Enum.sort(branches) == Enum.sort(["main", "branch-1", "branch-2", "branch-3"])
+    end
+  end
+
+  describe "get_remote_head/0" do
+    test "returns remote head branch for repo_1" do
+      TestRepos.repo_1()
+      assert {:ok, head} = Git.get_remote_head()
+      assert head == "main"
+    end
+  end
 end
