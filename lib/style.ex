@@ -11,7 +11,7 @@ defmodule Style do
 
   @spec ahead(binary()) :: binary()
   def ahead(str) do
-    IO.ANSI.green() <> str <> IO.ANSI.reset()
+    IO.ANSI.light_yellow() <> str <> IO.ANSI.reset()
   end
 
   @spec behind(binary()) :: binary()
