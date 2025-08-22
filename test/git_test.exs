@@ -140,11 +140,6 @@ defmodule Test.Git do
       assert {:error, _} = Git.compare_branches_to_head(["fake-branch"], "main")
     end
 
-    test "returns :ok when real branches compared to HEAD" do
-      TestRepos.repo_1()
-      assert {:ok, _} = Git.compare_branches_to_head(["branch-1", "branch-2"], "main")
-    end
-
     test "returns correct commit counts when real branches compared to HEAD" do
       TestRepos.repo_1()
 
