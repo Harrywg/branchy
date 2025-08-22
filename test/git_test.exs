@@ -173,5 +173,42 @@ defmodule Test.Git do
               ]} =
                Git.compare_branches_to_head(["branch-1", "branch-2"], "main")
     end
+
+    test "returns correct commit counts for out-of-sync branches in repo_1_oos" do
+      TestRepos.repo_1_oos()
+
+      # branch-1 and branch-2 are not pushed to remote, so origin/main is 0, branches have local commits
+      assert {:ok,
+              [
+                [{"branch-1", "1"}, {"origin/main", "0"}],
+                [{"branch-2", "2"}, {"origin/main", "0"}]
+              ]} =
+               Git.compare_branches_to_head(["branch-1", "branch-2"], "main")
+    end
+
+    test "returns correct commit counts for out-of-sync parallel branches in repo_2_oos" do
+      TestRepos.repo_2_oos()
+
+      # All branches are local, main has extra commits pushed to remote
+      assert {:ok,
+              [
+                [{"branch-1", "1"}, {"origin/main", "2"}],
+                [{"branch-2", "1"}, {"origin/main", "2"}],
+                [{"branch-3", "1"}, {"origin/main", "2"}]
+              ]} =
+               Git.compare_branches_to_head(["branch-1", "branch-2", "branch-3"], "main")
+    end
+
+    test "returns correct commit counts for out-of-sync branches with multiple commits in repo_3_oos" do
+      TestRepos.repo_3_oos()
+
+      # branch-1 has 2 commits, only 1 pushed; branch-2 has 3 commits, all pushed
+      assert {:ok,
+              [
+                [{"branch-1", "2"}, {"origin/main", "0"}],
+                [{"branch-2", "3"}, {"origin/main", "0"}]
+              ]} =
+               Git.compare_branches_to_head(["branch-1", "branch-2"], "main")
+    end
   end
 end

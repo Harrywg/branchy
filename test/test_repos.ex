@@ -46,6 +46,32 @@ defmodule TestRepos do
     cmd("git push -u origin branch-2")
   end
 
+  # out of sync
+  def repo_1_oos do
+    # Simple linear branching with remote: main -> branch-1 -> branch-2
+
+    # Create initial commit
+    new_file("readme.txt", "Initial commit")
+    cmd("git add .")
+    cmd("git commit -m 'Initial commit'")
+
+    # Add remote and push main branch
+    cmd("git remote add origin #{@test_repo_path_remote}")
+    cmd("git push -u origin main")
+
+    # branch-1
+    new_file("feature.txt", "Feature implementation")
+    cmd("git checkout -b branch-1")
+    cmd("git add .")
+    cmd("git commit -m 'Add feature'")
+
+    # branch-2
+    new_file("feature2.txt", "Feature implementation")
+    cmd("git checkout -b branch-2")
+    cmd("git add .")
+    cmd("git commit -m 'Add second feature'")
+  end
+
   def repo_2 do
     # Parallel branches from main (no merges)
 
@@ -79,6 +105,52 @@ defmodule TestRepos do
     cmd("git commit -m 'Fix bug'")
   end
 
+  # out of sync
+  def repo_2_oos do
+    # Parallel branches from main (no merges)
+
+    # Initial commit
+    new_file("main.txt", "Main branch")
+    cmd("git add .")
+    cmd("git commit -m 'Main commit'")
+
+    # Add remote and push main branch
+    cmd("git remote add origin #{@test_repo_path_remote}")
+    cmd("git push -u origin main")
+
+    # branch-1
+    cmd("git checkout -b branch-1")
+    new_file("a.txt", "Feature A")
+    cmd("git add .")
+    cmd("git commit -m 'Add feature A'")
+    cmd("git checkout main")
+
+    # branch-2
+    cmd("git checkout -b branch-2")
+    new_file("b.txt", "Feature B")
+    cmd("git add .")
+    cmd("git commit -m 'Add feature B'")
+    cmd("git checkout main")
+
+    # branch-3
+    cmd("git checkout -b branch-3")
+    new_file("fix.txt", "Bug fix")
+    cmd("git add .")
+    cmd("git commit -m 'Fix bug'")
+    cmd("git checkout main")
+
+    # Add some additional commits to main
+    cmd("git checkout main")
+    new_file("main2.txt", "Second commit on main")
+    cmd("git add .")
+    cmd("git commit -m 'Second commit on main'")
+
+    new_file("main3.txt", "Third commit on main")
+    cmd("git add .")
+    cmd("git commit -m 'Third commit on main'")
+    cmd("git push -u origin main")
+  end
+
   def repo_3 do
     # Multiple commits on different branches (ahead/behind scenario)
 
@@ -100,6 +172,43 @@ defmodule TestRepos do
     cmd("git add .")
     cmd("git commit -m 'A commit 2'")
     cmd("git push -u origin branch-1")
+
+    # branch-2 with 3 commits from main
+    cmd("git checkout main")
+    cmd("git checkout -b branch-2")
+    new_file("b1.txt", "First commit on B")
+    cmd("git add .")
+    cmd("git commit -m 'B commit 1'")
+    new_file("b2.txt", "Second commit on B")
+    cmd("git add .")
+    cmd("git commit -m 'B commit 2'")
+    new_file("b3.txt", "Third commit on B")
+    cmd("git add .")
+    cmd("git commit -m 'B commit 3'")
+    cmd("git push -u origin branch-2")
+  end
+
+  def repo_3_oos do
+    # Multiple commits on different branches (ahead/behind scenario)
+
+    # Initial commit
+    new_file("start.txt", "Starting point")
+    cmd("git add .")
+    cmd("git commit -m 'Start'")
+
+    # Add remote and push main branch
+    cmd("git remote add origin #{@test_repo_path_remote}")
+    cmd("git push -u origin main")
+
+    # branch-1 2 commits, one synced
+    new_file("a1.txt", "First commit on A")
+    cmd("git checkout -b branch-1")
+    cmd("git add .")
+    cmd("git commit -m 'A commit 1'")
+    cmd("git push -u origin branch-1")
+    new_file("a2.txt", "Second commit on A")
+    cmd("git add .")
+    cmd("git commit -m 'A commit 2'")
 
     # branch-2 with 3 commits from main
     cmd("git checkout main")
