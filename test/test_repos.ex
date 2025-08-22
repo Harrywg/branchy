@@ -136,10 +136,26 @@ defmodule TestRepos do
     cmd("git checkout main")
 
     # branch-3
+    # Do some additional out of sync stuff here
     cmd("git checkout -b branch-3")
     new_file("fix.txt", "Bug fix")
     cmd("git add .")
     cmd("git commit -m 'Fix bug'")
+    cmd("git push -u origin branch-3")
+    cmd("git checkout main")
+    # Make a local commit to branch-3 (not pushed)
+    cmd("git checkout branch-3")
+    new_file("local_only.txt", "Local only commit")
+    cmd("git add .")
+    cmd("git commit -m 'Local only commit on branch-3'")
+
+    # Checkout remote branch-3 in detached HEAD and make a commit directly to origin/branch-3
+    cmd("git fetch origin branch-3")
+    cmd("git checkout --detach origin/branch-3")
+    new_file("remote_only.txt", "Remote only commit")
+    cmd("git add .")
+    cmd("git commit -m 'Remote only commit on origin/branch-3'")
+    cmd("git push origin HEAD:branch-3")
     cmd("git checkout main")
 
     # Add some additional commits to main

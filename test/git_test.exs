@@ -194,7 +194,7 @@ defmodule Test.Git do
               [
                 [{"branch-1", "1"}, {"origin/main", "2"}],
                 [{"branch-2", "1"}, {"origin/main", "2"}],
-                [{"branch-3", "1"}, {"origin/main", "2"}]
+                [{"branch-3", "2"}, {"origin/main", "2"}]
               ]} =
                Git.compare_branches_to_head(["branch-1", "branch-2", "branch-3"], "main")
     end
@@ -242,6 +242,36 @@ defmodule Test.Git do
       assert {:ok,
               [
                 [{"branch-1", "0"}, {"origin/branch-1", "0"}],
+                [{"branch-2", "0"}, {"origin/branch-2", "0"}]
+              ]} =
+               Git.compare_branches_to_remote(["branch-1", "branch-2"])
+    end
+
+    test "returns correct commit counts for out-of-sync branches in repo_1_oos" do
+      TestRepos.repo_1_oos()
+      # No branches pushed to remote, so no upstream for branch-1 and branch-2
+      assert {:ok, [{:no_upstream, "branch-1"}, {:no_upstream, "branch-2"}]} =
+               Git.compare_branches_to_remote(["branch-1", "branch-2"])
+    end
+
+    test "returns correct commit counts for out-of-sync parallel branches in repo_2_oos" do
+      TestRepos.repo_2_oos()
+      # No branches pushed to remote, so no upstream for branch-1, branch-2, branch-3
+      assert {:ok,
+              [
+                {:no_upstream, "branch-1"},
+                {:no_upstream, "branch-2"},
+                [{"branch-3", "1"}, {"origin/branch-3", "1"}]
+              ]} =
+               Git.compare_branches_to_remote(["branch-1", "branch-2", "branch-3"])
+    end
+
+    test "returns correct commit counts for out-of-sync branches with multiple commits in repo_3_oos" do
+      TestRepos.repo_3_oos()
+      # branch-1 has 2 commits, only 1 pushed; branch-2 has 3 commits, all pushed
+      assert {:ok,
+              [
+                [{"branch-1", "1"}, {"origin/branch-1", "0"}],
                 [{"branch-2", "0"}, {"origin/branch-2", "0"}]
               ]} =
                Git.compare_branches_to_remote(["branch-1", "branch-2"])
