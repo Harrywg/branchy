@@ -5,7 +5,8 @@ defmodule Controller do
          {:ok, local_branches} <- Git.get_all_local_branches(),
          {:ok, head} <- Git.get_remote_head(),
          {:ok, comparisons} <- Git.compare_branches_to_head(local_branches, head) do
-      Render.compare(head, comparisons)
+      sorted_comparisons = Git.Utils.sort_compare_branches(comparisons)
+      Render.compare(head, sorted_comparisons)
     else
       {:error, msg} ->
         Render.error(msg)
@@ -17,7 +18,8 @@ defmodule Controller do
     with :ok <- Git.fetch(),
          {:ok, local_branches} <- Git.get_all_local_branches(),
          {:ok, comparisons} <- Git.compare_branches_to_remote(local_branches) do
-      Render.contrast(comparisons)
+      sorted_comparisons = Git.Utils.sort_contrast_branches(comparisons)
+      Render.contrast(sorted_comparisons)
     else
       {:error, msg} ->
         Render.error(msg)
