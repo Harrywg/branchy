@@ -2,8 +2,8 @@
 
 #!/usr/bin/env elixir
 
-bin_name = "branchy"
-source   = Path.expand("./#{bin_name}") # adjust if different
+bin_name = "branchy_macos"
+source   = Path.expand("./burrito_out/#{bin_name}") # adjust if different
 target   = "/usr/local/bin/#{bin_name}"
 
 unless File.exists?(source) do
