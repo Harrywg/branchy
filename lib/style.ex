@@ -24,6 +24,11 @@ defmodule Style do
     IO.ANSI.red() <> str <> IO.ANSI.reset()
   end
 
+  @spec error(binary()) :: binary()
+  def success(str) do
+    IO.ANSI.green() <> str <> IO.ANSI.reset()
+  end
+
   def faded(str) do
     IO.ANSI.light_black() <> str <> IO.ANSI.reset()
   end

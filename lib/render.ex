@@ -23,8 +23,14 @@ defmodule Render do
 
     branch_compare_data =
       comparisons
-      |> Enum.map(fn [{_, branch_1_ahead}, {_, branch_2_ahead}] ->
-        Style.ahead("↑ #{branch_1_ahead}") <> " " <> Style.behind("↓ #{branch_2_ahead}")
+      |> Enum.map(fn comparison ->
+        case comparison do
+          [{_, "0"}, {_, "0"}] ->
+            Style.success("✓ up to date")
+
+          [{_, branch_1_ahead}, {_, branch_2_ahead}] ->
+            Style.ahead("↑ #{branch_1_ahead}") <> " " <> Style.behind("↓ #{branch_2_ahead}")
+        end
       end)
 
     IO.puts(
@@ -61,12 +67,15 @@ defmodule Render do
       comparisons
       |> Enum.map(fn compare_data ->
         case compare_data do
+          [{_, "0"}, {_, "0"}] ->
+            Style.success("✓ up to date")
+
           [{_, branch_1_ahead}, {_, branch_2_ahead}] ->
             Style.ahead("↑ #{branch_1_ahead}") <>
               " " <> Style.behind("↓ #{branch_2_ahead}")
 
           {:no_upstream, _branch_1} ->
-            Style.error("no upstream")
+            Style.error("x no upstream")
         end
       end)
 
