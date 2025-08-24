@@ -45,12 +45,10 @@ defmodule Branchy.MixProject do
 
   defp aliases do
     [
-      "branchy.release": [
+      "branchy.clean": [
         "cmd rm -rf ./_build",
         "cmd rm -rf ./burrito_out",
-        "clean",
-        "compile",
-        "cmd BURRITO_TARGET=macos MIX_ENV=prod mix release --overwrite"
+        "clean"
       ]
     ]
   end

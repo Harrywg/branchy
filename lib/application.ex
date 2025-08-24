@@ -2,8 +2,10 @@ defmodule Branchy.Application do
   use Application
 
   def start(_type, _args) do
-    case Mix.env() do
-      :prod ->
+    env = System.get_env("MIX_ENV") || "prod"
+
+    case env do
+      "prod" ->
         Task.start_link(fn ->
           args =
             if Code.ensure_loaded?(Burrito.Util.Args),
@@ -14,13 +16,13 @@ defmodule Branchy.Application do
           System.halt()
         end)
 
-      :dev ->
+      "dev" ->
         Task.start_link(fn ->
           args = System.argv()
           Branchy.main(args)
         end)
 
-      :test ->
+      "test" ->
         Task.start_link(fn ->
           Process.sleep(:infinity)
         end)

@@ -24,7 +24,7 @@ defmodule Style do
     IO.ANSI.red() <> str <> IO.ANSI.reset()
   end
 
-  @spec error(binary()) :: binary()
+  @spec success(binary()) :: binary()
   def success(str) do
     IO.ANSI.green() <> str <> IO.ANSI.reset()
   end

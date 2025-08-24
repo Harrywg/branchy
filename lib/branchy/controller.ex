@@ -28,7 +28,15 @@ defmodule Controller do
 
   @spec inspect() :: :ok
   def inspect do
-    IO.puts("inspect")
-    IO.puts("will run a health check on local branches and highlight any branches okay to delete")
+    with :ok <- Git.fetch(),
+         {:ok, local_branches} <- Git.get_all_local_branches(),
+         {:ok, comparisons} <- Git.compare_branches_to_remote(local_branches) do
+      sorted_comparisons = Git.Utils.filter_inspect_branches(comparisons)
+      number_ok_branches = Git.Utils.number_ok_branches(comparisons)
+      Render.inspect(sorted_comparisons, number_ok_branches)
+    else
+      {:error, msg} ->
+        Render.error(msg)
+    end
   end
 end
