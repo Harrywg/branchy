@@ -12,8 +12,7 @@ unless File.exists?(source) do
 end
 
 File.rm_rf!(target)
-IO.puts("Copying #{source} -> #{target}")
 File.cp!(source, target)
 File.chmod!(target, 0o755)
 
-IO.puts("Installed #{bin_name} to #{target}")
+IO.puts("Installed \n- #{source}\nto\n- #{target}")

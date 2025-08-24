@@ -51,6 +51,9 @@ defmodule Branchy.MixProject do
         "clean",
         "compile",
         "cmd BURRITO_TARGET=macos MIX_ENV=prod mix release --overwrite"
+      ],
+      "branchy.install": [
+        "run ./_installer.exs"
       ]
     ]
   end
