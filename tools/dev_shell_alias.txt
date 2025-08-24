@@ -1,0 +1,1 @@
+alias _branchy='mix run --no-start -e "Branchy.main(System.argv())" --'
