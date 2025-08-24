@@ -2,9 +2,8 @@
 
 #!/usr/bin/env elixir
 
-bin_name = "branchy_macos"
-source   = Path.expand("./burrito_out/#{bin_name}") # adjust if different
-target   = "/usr/local/bin/#{bin_name}"
+source   = Path.expand("./burrito_out/branchy_macos")
+target   = "/usr/local/bin/branchy"
 
 unless File.exists?(source) do
   IO.puts(:stderr, "Could not find built executable at #{source}")
