@@ -12,6 +12,7 @@ unless File.exists?(source) do
   System.halt(1)
 end
 
+File.rm_rf!(target)
 IO.puts("Copying #{source} -> #{target}")
 File.cp!(source, target)
 File.chmod!(target, 0o755)

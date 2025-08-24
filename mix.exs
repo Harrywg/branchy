@@ -46,6 +46,7 @@ defmodule Branchy.MixProject do
   defp aliases do
     [
       "branchy.release": [
+        "cmd rm -rf ./_build",
         "cmd rm -rf ./burrito_out",
         "clean",
         "compile",
