@@ -26,12 +26,6 @@ defmodule Controller do
     end
   end
 
-  @spec sync() :: :ok
-  def sync do
-    IO.puts("sync")
-    IO.puts("will pull all local branches if no conflict, else log conflict and abort")
-  end
-
   @spec inspect() :: :ok
   def inspect do
     IO.puts("inspect")

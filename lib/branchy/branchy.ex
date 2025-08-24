@@ -7,9 +7,6 @@ defmodule Branchy do
       ["contrast"] ->
         Controller.contrast()
 
-      ["sync"] ->
-        Controller.sync()
-
       ["inspect"] ->
         Controller.inspect()
 

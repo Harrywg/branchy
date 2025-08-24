@@ -12,4 +12,8 @@
 - Delete action -> prompt y/n, then delete local branch if y
 - Sync action -> try to merge remote in to local, if conflict then abort
 
+### Improvements
+
+- Dynamically get the upstream path instead of assuming origin/
+
 ## Bugs
