@@ -68,7 +68,7 @@ defmodule Render do
       |> Enum.map(fn compare_data ->
         case compare_data do
           [{_, "0"}, {_, "0"}] ->
-            Style.success("✓ up to date")
+            Style.success("✓ in sync")
 
           [{_, branch_1_ahead}, {_, branch_2_ahead}] ->
             Style.ahead("↑ #{branch_1_ahead}") <>
