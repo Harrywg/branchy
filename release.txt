@@ -1,1 +1,0 @@
-mix branchy.clean && MIX_ENV=prod mix clean && MIX_ENV=prod mix compile && BURRITO_LOG_LEVEL=silent BURRITO_TARGET=macos MIX_ENV=prod mix release --overwrite

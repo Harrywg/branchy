@@ -45,10 +45,17 @@ defmodule Branchy.MixProject do
 
   defp aliases do
     [
-      "branchy.clean": [
-        "cmd rm -rf ./_build",
-        "cmd rm -rf ./burrito_out",
-        "clean"
+      "branchy.replace": [
+        "branchy.uninstall",
+        "branchy.install"
+      ],
+      "branchy.release": [
+        "cmd rm -rf ./burrito_out ./_build",
+        "clean",
+        "compile",
+        "release --overwrite",
+        "cmd ./burrito_out/branchy_macos cache_clear",
+        "cmd BURRITO_LOG_LEVEL=silent BURRITO_TARGET=macos MIX_ENV=prod mix release --overwrite"
       ]
     ]
   end

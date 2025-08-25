@@ -126,8 +126,11 @@ defmodule Render do
       end)
 
     IO.puts(Style.success("✓ #{number_ok_branches} branches in sync"))
-    IO.puts("")
-    IO.puts(Style.faded("Needs attention:"))
+
+    if(local_branches |> Enum.any?()) do
+      IO.puts("")
+      IO.puts(Style.faded("Needs attention:"))
+    end
 
     IO.puts(
       local_branches
