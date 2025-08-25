@@ -1,5 +1,10 @@
 ## Core functionality
 
+### branch_name argument
+
+- Add branchy compare <branch_name>
+- Add branchy contrast <branch_name>
+
 ### Branchy Inspect command
 
 - Refine what is a branch that needs action

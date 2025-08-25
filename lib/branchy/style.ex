@@ -1,12 +1,14 @@
 defmodule Style do
   @spec upstream_branch(binary()) :: binary()
   def upstream_branch(str) do
-    IO.ANSI.cyan() <> str <> IO.ANSI.reset()
+    trimmed = if String.length(str) > 32, do: String.slice(str, 0, 29) <> "...", else: str
+    IO.ANSI.cyan() <> trimmed <> IO.ANSI.reset()
   end
 
   @spec branch(binary()) :: binary()
   def branch(str) do
-    IO.ANSI.blue() <> str <> IO.ANSI.reset()
+    trimmed = if String.length(str) > 32, do: String.slice(str, 0, 29) <> "...", else: str
+    IO.ANSI.blue() <> trimmed <> IO.ANSI.reset()
   end
 
   @spec ahead(binary()) :: binary()
