@@ -1,6 +1,7 @@
 defmodule Render do
   def compare(head, comparisons) do
     IO.puts("")
+    IO.puts("")
 
     [local_branches, upstream_branches] =
       comparisons
@@ -26,7 +27,7 @@ defmodule Render do
       |> Enum.map(fn comparison ->
         case comparison do
           [{_, "0"}, {_, "0"}] ->
-            Style.success("✓ up to date")
+            Style.success("✓ in sync")
 
           [{_, branch_1_ahead}, {_, branch_2_ahead}] ->
             Style.ahead("↑ #{branch_1_ahead}") <> " " <> Style.behind("↓ #{branch_2_ahead}")
@@ -42,6 +43,7 @@ defmodule Render do
   end
 
   def contrast(comparisons) do
+    IO.puts("")
     IO.puts("")
 
     [local_branches, upstream_branches] =
@@ -89,6 +91,7 @@ defmodule Render do
 
   def inspect(comparisons, number_ok_branches) do
     IO.puts("")
+    IO.puts("")
 
     [local_branches, upstream_branches] =
       comparisons
@@ -122,7 +125,9 @@ defmodule Render do
         end
       end)
 
-    IO.puts(Style.faded("✓ Counted #{number_ok_branches} branches in sync with upstream"))
+    IO.puts(Style.success("✓ #{number_ok_branches} branches in sync"))
+    IO.puts("")
+    IO.puts(Style.faded("Need attention:"))
 
     IO.puts(
       local_branches
