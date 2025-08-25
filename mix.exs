@@ -56,6 +56,9 @@ defmodule Branchy.MixProject do
         "release --overwrite",
         "cmd ./burrito_out/branchy_macos cache_clear",
         "cmd BURRITO_LOG_LEVEL=silent BURRITO_TARGET=macos MIX_ENV=prod mix release --overwrite"
+      ],
+      "branchy.test": [
+        "cmd MIX_ENV=test mix test"
       ]
     ]
   end
