@@ -3,20 +3,25 @@ defmodule Git.Utils do
     comparisons
     |> Enum.sort_by(
       fn
-        {:ok, [{_, ahead}, {_, behind}]} -> {behind, ahead}
-        _ -> {1, 0, 0}
+        [{_, ahead}, {_, behind}] ->
+          {0, String.to_integer(behind), String.to_integer(ahead)}
+
+        _ ->
+          {1, 0, 0}
       end,
-      :desc
+      :asc
     )
-    |> Enum.reverse()
   end
 
   def sort_contrast_branches(comparisons) do
     comparisons
     |> Enum.sort_by(
       fn
-        [{_, ahead}, {_, behind}] -> {0, behind, ahead}
-        _ -> {1, 0, 0}
+        [{_, ahead}, {_, behind}] ->
+          {0, String.to_integer(behind), String.to_integer(ahead)}
+
+        _ ->
+          {1, 0, 0}
       end,
       :asc
     )
