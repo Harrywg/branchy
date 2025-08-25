@@ -127,7 +127,7 @@ defmodule Render do
 
     IO.puts(Style.success("✓ #{number_ok_branches} branches in sync"))
     IO.puts("")
-    IO.puts(Style.faded("Need attention:"))
+    IO.puts(Style.faded("Needs attention:"))
 
     IO.puts(
       local_branches
