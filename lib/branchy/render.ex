@@ -150,7 +150,6 @@ defmodule Render do
     IO.puts("Use one of the following:")
     IO.puts("branchy compare")
     IO.puts("branchy contrast")
-    IO.puts("branchy sync")
     IO.puts("branchy inspect")
     IO.puts("")
   end

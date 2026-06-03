@@ -36,7 +36,8 @@ defmodule Branchy.MixProject do
         steps: [:assemble, &Burrito.wrap/1],
         burrito: [
           targets: [
-            macos: [os: :darwin, cpu: :aarch64]
+            macos: [os: :darwin, cpu: :aarch64],
+            linux: [os: :linux, cpu: :x86_64, libc: :musl]
           ]
         ]
       ]
@@ -51,11 +52,10 @@ defmodule Branchy.MixProject do
       ],
       "branchy.release": [
         "cmd rm -rf ./burrito_out ./_build",
-        "clean",
-        "compile",
-        "release --overwrite",
+        "cmd BURRITO_LOG_LEVEL=silent BURRITO_TARGET=macos MIX_ENV=prod mix release --overwrite",
         "cmd ./burrito_out/branchy_macos cache_clear",
-        "cmd BURRITO_LOG_LEVEL=silent BURRITO_TARGET=macos MIX_ENV=prod mix release --overwrite"
+        "cmd BURRITO_LOG_LEVEL=silent BURRITO_TARGET=linux MIX_ENV=prod mix release --overwrite",
+        "cmd ./burrito_out/branchy_linux cache_clear"
       ],
       "branchy.test": [
         "cmd MIX_ENV=test mix test"

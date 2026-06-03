@@ -16,7 +16,7 @@ Minimal Git branch status CLI (Elixir + Burrito). It helps you see which local b
 git clone <your-fork-or-repo-url>
 cd branchy
 mix deps.get
-mix branchy compare   # or contrast / inspect
+mix branchy compare # or contrast / inspect
 ```
 
 ## Usage
@@ -31,8 +31,8 @@ mix branchy contrast
 Standalone binary (macOS arm64 only for now):
 
 ```bash
-mix branchy.release
-mix branchy.install   # installs to /usr/local/bin/branchy
+mix branchy.release # currently not working, see RELEASE.md
+mix branchy.install # installs to /usr/local/bin/branchy
 branchy compare
 ```
 
