@@ -65,3 +65,9 @@ Uninstall:
 ```bash
 mix branchy.uninstall
 ```
+
+### Tests
+
+```bash
+mix branchy.test
+```
