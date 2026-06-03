@@ -5,41 +5,22 @@ Minimal Git branch status CLI (Elixir + Burrito). It helps you see which local b
 > [!NOTE]
 > I had many more features intended for this project including an interactive element to delete / attempt sync branches. This is a version trying to make the most of how far I got with it!
 
-## Features
+## Download
 
-- `compare`: local branches vs remote HEAD (e.g. `origin/main`).
-- `contrast`: each local branch vs its own upstream (`origin/<branch>`), marking missing upstreams.
-
-## Quick Start
-
-```bash
-git clone <your-fork-or-repo-url>
-cd branchy
-mix deps.get
-mix branchy compare # or contrast / inspect
+```sh
+curl -fsSL https://raw.githubusercontent.com/Harrywg/branchy/main/install.sh | sh
 ```
 
-## Usage
+Supports macOS (Apple Silicon) and Linux (x86_64)
 
-Run inside a Git repository with a remote named `origin`.
+### Usage
 
-```bash
-mix branchy compare
-mix branchy contrast
-```
-
-Standalone binary (macOS arm64 only for now):
+Run inside any Git repository with a remote named `origin`.
 
 ```bash
-mix branchy.release # currently not working, see RELEASE.md
-mix branchy.install # installs to /usr/local/bin/branchy
-branchy compare
-```
-
-Uninstall:
-
-```bash
-mix branchy.uninstall
+branchy compare   # compare local branches vs remote HEAD (e.g. origin/main)
+branchy contrast  # compare each local branch vs its own upstream (origin/<branch>)
+branchy inspect   # like contrast, but hides in-sync branches — only shows what needs attention
 ```
 
 ### Output Legend
@@ -51,20 +32,36 @@ mix branchy.uninstall
 | ↓ N               | Remote branch is N commits ahead |
 | x / x no upstream | No tracked remote branch         |
 
-## Development
+## Local Dev
 
-- Elixir ~> 1.18.
-- Tests create temporary Git repos (no network).
-
-Run tests:
+### Quick Start
 
 ```bash
-mix test
+git clone <your-fork-or-repo-url>
+cd branchy
+mix deps.get
+mix branchy compare # or contrast
 ```
 
-## Release (Burrito)
+### Usage
+
+Run inside a Git repository with a remote named `origin`.
 
 ```bash
-mix branchy.release
-ls burrito_out/  # contains branchy_macos
+mix branchy compare
+mix branchy contrast
+```
+
+Standalone binary (macOS arm64, Linux x86_64):
+
+```bash
+mix branchy.release # currently not working, see RELEASE.md
+mix branchy.install # installs to /usr/local/bin/branchy
+branchy compare
+```
+
+Uninstall:
+
+```bash
+mix branchy.uninstall
 ```
